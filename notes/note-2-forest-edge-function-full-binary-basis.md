@@ -3,7 +3,7 @@
 pequalnp.com, 2026-11-24. A draft for readers, not a checked row.
 
 A follow-up to [Note 1](note-1-edge-function-exact-size.md). This is a hand proof plus SAT
-checks. It is not machine-checked in Lean and has not been independently reviewed. No claim is
+checks. It is not machine-checked in Lean. One AI referee (a fresh Claude subagent) reviewed it, found no mathematical error and flagged wording gaps, which are fixed here. No human has reviewed it. No claim is
 made about whether it is known. The scripts are in [note-2-scripts/](note-2-scripts/).
 
 ## Statement
@@ -29,11 +29,14 @@ Take a minimum vertex cover T. Each t in T has an edge whose other endpoint is o
 otherwise T - t would be a cover. Assign each edge to one covering endpoint, so that each t
 receives d_t >= 1 edges. The circuit OR_{t in T} (x_t AND OR of t's assigned neighbours)
 uses sum (d_t - 1 + 1) + |T| - 1 = |E| + tau - 1 gates (AND/OR only). ORing in the |A|
-extra variables costs |A| more gates.
+extra variables costs |A| more gates when G has an edge. When G has no edge, OR of A costs
+|A| - 1 gates, which again equals b.
 
 ## Lower bound
 
-We use induction on the number of relevant variables. Write b(G,A) = |A| + |E| + tau(G) - 1.
+We use induction on the number of relevant variables. Functions are taken over any ambient
+set of variables; irrelevant variables cost nothing, since inputs are free.
+Write b(G,A) = |A| + |E| + tau(G) - 1.
 Let C be a minimum B2 circuit for F = F(G,A). We use the standard facts about minimum
 circuits of a function that depends on at least two variables:
 
@@ -46,17 +49,23 @@ makes its output constant. An XOR-type gate is a XOR b XOR k.
 
 **Elimination.** Suppose a substitution is made (a variable becomes a constant, or a
 variable on which the restricted function no longer depends is replaced by an existing wire
-that comes before all of its readers). Then every gate with a constant input, or with the
-same wire on both inputs, computes a constant or a (negated) copy of one wire. Such a gate
-can be removed: its readers read that wire instead, and any negation is folded into their
-truth tables, or into the output's polarity. So C(F') <= |C| - e, where F' is the
-restricted function and e is the number of such gates. To prove |C| >= b(G,A) it is enough
+that comes before all of its readers, so no cycle arises). Propagate in topological order.
+A gate is *eliminated* if, after propagation, it has a constant input, or both of its inputs
+are (negated) copies of one wire. Such a gate computes a constant or a (negated) copy of one
+wire, so it can be removed: its readers read that wire instead, and any negation is folded
+into their truth tables. Chains of removed gates just compose these copies. If the output
+gate is removed and becomes ¬(gate a), the negation is folded into a's truth table and into
+a's other readers. It cannot be ¬(input variable), because F' is monotone and nonconstant in
+every case below. So C(F') <= |C| - e, where F' is the restricted function and e is the
+number of eliminated gates. Gates such as R_g in Case 3c, whose input becomes constant only
+through propagation, are counted. To prove |C| >= b(G,A) it is enough
 to find a substitution with b(G,A) - b(G',A') <= e. We call b(G,A) - b(G',A') the drop.
 
 **Base cases.**
 - |E| = 0 and |A| = 1: b = 0.
 - G is a single edge and A is empty: b = 1, and one gate is needed.
 - G is a path on three vertices and A is empty: b = 2, and F depends on 3 variables.
+  (This case is also handled by Case 1, so it is listed only for clarity.)
 
 **Step 0 (A is nonempty, not a base case).** Set x_a := 0 for some a in A. Then
 F' = F(G, A - a), the drop is 1, and e >= 1 by (M3).
@@ -99,9 +108,13 @@ F|_{x_v=1} = x_u OR f_{G-u-v} = F(G-u-v, {u}), by absorption, so that substituti
     * readers(x_u) = {g, h}: then h is a function of (x_u, x_v) alone, and it is their only
       route to the output. A single bit cannot determine both x_u x_v and x_u, since
       determining x_u forces h = ±x_u. Contradiction.
-    * readers(x_u) = {h}: then g comes before h, so y depends on neither x_u nor x_v. At
-      the second input y is a constant b, and the output depends on x_u, x_v only through
-      h = op(x_u, x_v XOR b). By (M1) this depends on x_v, yet F = x_u there. Contradiction.
+    * readers(x_u) = {h}: then h reads g, so g comes before h. Hence y depends on neither
+      x_v (g is its only reader) nor x_u (otherwise x_u → h → … → y → g → h is a cycle).
+      At the second input (x_w = 1, other variables 0), y is a constant b, and the output
+      equals φ(h), where h = op'(x_u, x_v) := op(x_u, x_v XOR b XOR k) with k folded in. By
+      (M1), op depends on its g-input, so there is a value a with op'(a, ·) nonconstant. At
+      x_u = a, F = x_u = a is constant while h takes both values, so φ is constant. Then F
+      cannot depend on x_u at this input, yet F = x_u there. Contradiction.
 
 Every case has e >= the drop, and every substitution lowers the number of relevant
 variables. The other cases (u with three or more neighbours) are covered by Case 1. This
@@ -132,7 +145,7 @@ mismatches.
 ## Limitations
 
 - This is a hand proof. It is not a Lean proof against the repository's `BinaryCircuit`
-  definitions, and it has not been independently reviewed.
+  definitions. Its only review so far is by an AI referee, not by a person.
 - It covers forests only. The long-thread and cycle classes of Note 1 (a) and (c) are not
   covered. C5 and C6 agree with |E|+tau-1 in B2 by computer, but these are only two data points.
 - The bound is linear, at most about 1.5n, so it has no bearing on CircuitBreaker's 3.1n
