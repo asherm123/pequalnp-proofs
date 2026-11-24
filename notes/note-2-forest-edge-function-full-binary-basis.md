@@ -120,6 +120,9 @@ and MAJ_3 = 4.
 | stars S3, S4 | 3, 4 | 3, 4 |
 | C4 | 5 | 3 (the known exception) |
 | C5 | 7 | 7 |
+| C6 | 8 | 8 |
+| P7 | 8 | 8 |
+| spider (three legs of length 2) | 8 | 8 |
 
 Every forest without isolated vertices on at most 6 vertices, up to isomorphism, was also
 checked by solving "size |E|+tau-1 is possible" and "size |E|+tau-1-1 is impossible"
@@ -131,7 +134,7 @@ mismatches.
 - This is a hand proof. It is not a Lean proof against the repository's `BinaryCircuit`
   definitions, and it has not been independently reviewed.
 - It covers forests only. The long-thread and cycle classes of Note 1 (a) and (c) are not
-  covered. C5 agrees with |E|+tau-1 in B2 by computer, but that is one data point.
+  covered. C5 and C6 agree with |E|+tau-1 in B2 by computer, but these are only two data points.
 - The bound is linear, at most about 1.5n, so it has no bearing on CircuitBreaker's 3.1n
   baseline or on superlinear lower bounds.
 - Novelty is unknown. Gate elimination with XOR-type cases is standard, and the
