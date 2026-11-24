@@ -1,0 +1,20 @@
+2 ((0, 1),) pred 1 no(pred-1): True yes(pred): True OK
+3 ((0, 1), (0, 2)) pred 2 no(pred-1): True yes(pred): True OK
+4 ((0, 1), (2, 3)) pred 3 no(pred-1): True yes(pred): True OK
+4 ((0, 1), (0, 2), (0, 3)) pred 3 no(pred-1): True yes(pred): True OK
+4 ((0, 1), (0, 2), (1, 3)) pred 4 no(pred-1): True yes(pred): True OK
+5 ((0, 1), (0, 2), (3, 4)) pred 4 no(pred-1): True yes(pred): True OK
+5 ((0, 1), (0, 2), (0, 3), (0, 4)) pred 4 no(pred-1): True yes(pred): True OK
+5 ((0, 1), (0, 2), (0, 3), (1, 4)) pred 5 no(pred-1): True yes(pred): True OK
+5 ((0, 1), (0, 2), (1, 3), (2, 4)) pred 5 no(pred-1): True yes(pred): True OK
+6 ((0, 1), (2, 3), (4, 5)) pred 5 no(pred-1): True yes(pred): True OK
+6 ((0, 1), (0, 2), (0, 3), (4, 5)) pred 5 no(pred-1): True yes(pred): True OK
+6 ((0, 1), (0, 2), (1, 3), (4, 5)) pred 6 no(pred-1): True yes(pred): True OK
+6 ((0, 1), (0, 2), (3, 4), (3, 5)) pred 5 no(pred-1): True yes(pred): True OK
+6 ((0, 1), (0, 2), (0, 3), (0, 4), (0, 5)) pred 5 no(pred-1): True yes(pred): True OK
+6 ((0, 1), (0, 2), (0, 3), (0, 4), (1, 5)) pred 6 no(pred-1): True yes(pred): True OK
+6 ((0, 1), (0, 2), (0, 3), (1, 4), (1, 5)) pred 6 no(pred-1): True yes(pred): True OK
+6 ((0, 1), (0, 2), (0, 3), (1, 4), (2, 5)) pred 7 no(pred-1): True yes(pred): True OK
+6 ((0, 1), (0, 2), (0, 3), (1, 4), (4, 5)) pred 6 no(pred-1): True yes(pred): True OK
+6 ((0, 1), (0, 2), (1, 3), (2, 4), (3, 5)) pred 7 no(pred-1): True yes(pred): True OK
+forests checked 19 mismatches 0
